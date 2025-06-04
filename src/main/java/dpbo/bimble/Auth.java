@@ -1,4 +1,4 @@
-package dpbo.bimble; // Pastikan package sesuai
+package dpbo.bimble;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ public class Auth {
 
     public Auth() {
         this.userDatabase = new ArrayList<>();
-        initializeDefaultUsers(); // Panggil metode untuk menambahkan user default
+        initializeDefaultUsers();
     }
 
     private void initializeDefaultUsers() {
