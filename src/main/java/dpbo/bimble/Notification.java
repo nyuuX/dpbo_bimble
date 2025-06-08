@@ -14,7 +14,6 @@ public abstract class Notification {
     private Date date;
     private String Subject;
 
-    // Constructor
     public Notification(String notificationID, String message, String type,
                         Registrasi registration, String paymentStatus, Schedule schedule, Date date, String subject) {
         this.notificationID = notificationID;
@@ -91,6 +90,5 @@ public abstract class Notification {
     public void setSubject(String Subject) {
     	this.Subject = Subject;
     }
-    // Abstract method → harus di-override oleh subclass (Polymorphism)
     public abstract String getNotificationDetails();
 }
