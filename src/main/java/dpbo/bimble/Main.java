@@ -19,7 +19,7 @@ public class Main {
     private static int nextNotificationId = 1;
 
     public static void main(String[] args) {
-        System.out.println("Selamat Datang di Sistem Briton Bimbel Sederhana");
+        System.out.println("Bimbel");
 
         while (true) {
             System.out.println("\n--- Menu Utama ---");
@@ -386,57 +386,61 @@ public class Main {
 
     private static void makePayment(Student student) {
         System.out.println("\n--- Lakukan Pembayaran ---");
-        String regId = MissionUtil.getString("Masukkan ID Registrasi Anda untuk melakukan pembayaran");
+        String idRegistrasi = MissionUtil.getString("Masukkan ID Registrasi Anda");
 
-        Registrasi studentRegistration = null;
-        for (Registrasi r : registrations) {
-            if (r.getIdRegistrasi().equalsIgnoreCase(regId) && r.getStudent() != null && r.getStudent().equals(student)) {
-                studentRegistration = r;
+        Payment paymentToProcess = null;
+        Registrasi relatedReg = null;
+
+        for (Registrasi reg : registrations) {
+            if (reg.getIdRegistrasi().equals(idRegistrasi) && reg.getStudent().equals(student)) {
+                relatedReg = reg;
                 break;
             }
         }
 
-        if (studentRegistration == null) {
-            System.out.println("ID Registrasi tidak ditemukan atau bukan milik Anda. Silakan coba lagi.");
+        if (relatedReg == null) {
+            System.out.println("ID Registrasi tidak valid atau bukan milik Anda.");
             return;
         }
 
-        Payment paymentToProcess = null;
-        for (Payment p : paymentHistory.getAllPayments()) {
-            if (p.getIdRegistrasi().equals(studentRegistration.getIdRegistrasi())) {
+        for(Payment p : paymentHistory.getAllPayments()){
+            if(p.getIdRegistrasi().equals(idRegistrasi)){
                 paymentToProcess = p;
                 break;
             }
         }
 
         if (paymentToProcess == null) {
-            System.out.println("Tidak ada data pembayaran untuk pendaftaran Anda. Mohon hubungi admin.");
+            System.out.println("Data pembayaran untuk registrasi ini tidak ditemukan.");
+            return;
+        }
+        
+        if (paymentToProcess.getStatus().equals("Completed")) {
+            System.out.println("Pembayaran untuk registrasi ini sudah lunas.");
             return;
         }
 
-        if (paymentToProcess.getStatus().equalsIgnoreCase("Sukses")) {
-            System.out.println("Pembayaran Anda sudah lunas. Terima kasih!");
-            return;
-        }
-        if (paymentToProcess.getStatus().equalsIgnoreCase("Completed")) {
-            System.out.println("Anda sudah melakukan pembayaran. Menunggu konfirmasi dari Admin.");
-            return;
-        }
+        paymentToProcess.printPaymentInfo();
+        String konfirmasi = MissionUtil.getString("Ketik 'BAYAR' untuk mengkonfirmasi pembayaran senilai Rp" + paymentToProcess.getTotalHarga());
 
-        System.out.println("Detail Pembayaran Anda:");
-        paymentToProcess.printPaymentInfo(); 
+        if (konfirmasi.equalsIgnoreCase("BAYAR")) {
+            paymentToProcess.setStatus("Completed");
+            paymentToProcess.setTanggalPembayaran(new java.util.Date());
+            
+            for (Notification n : notifications) {
+                if (n.getRegistration().getIdRegistrasi().equals(idRegistrasi)) {
+                    n.setPaymentStatus("Lunas");
+                    n.setMessage("Pembayaran Anda telah berhasil.");
+                }
+            }
 
-        String confirmPay = MissionUtil.getString("Ketik 'BAYAR' untuk mengkonfirmasi pembayaran ini");
-        if (confirmPay.equalsIgnoreCase("BAYAR")) {
-            paymentToProcess.setStatus("Completed"); 
-            paymentToProcess.setTanggalPembayaran(new Date());
-            System.out.println("Pembayaran berhasil Anda lakukan. Menunggu konfirmasi Admin.");
+            String notifId = "NTF-" + nextNotificationId++;
+            PaymentNotification paymentNotif = new PaymentNotification(notifId,
+                "Pembayaran Anda sebesar Rp" + paymentToProcess.getTotalHarga() + " telah berhasil.",
+                "Pembayaran", relatedReg, "Completed", null, new Date(System.currentTimeMillis()), "Status Pembayaran");
+            notifications.add(paymentNotif);
 
-            notifications.add(new PaymentNotification(
-                "NOTIF-" + nextNotificationId++,
-                "Anda telah melakukan pembayaran untuk ID Registrasi " + studentRegistration.getIdRegistrasi() + ". Menunggu konfirmasi Admin.",
-                "Pembayaran Dilakukan", studentRegistration, "Completed", null, new Date(), "Pembayaran"
-            ));
+            System.out.println("Pembayaran berhasil!");
         } else {
             System.out.println("Pembayaran dibatalkan.");
         }
