@@ -65,6 +65,12 @@ import java.util.Date;
 	        System.out.println("Status: " + status);
 	        System.out.println("Tanggal Pembayaran: " + tanggalPembayaran);
 	    }
+
+
+		public void setTanggalPembayaran(Date date) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 
 

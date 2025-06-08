@@ -238,7 +238,7 @@ public class Main {
             }
             if (!infoTestExists) {
 
-                InfoTest newInfoTest = new InfoTest(new JadwalTest("Belum ditentukan"), regId);
+                InfoTest newInfoTest = new InfoTest(new JadwalTest("Belum ditentukan"));
                 newInfoTest.setAssociatedRegistrationId(regId); // Set the associated ID
                 infoTests.add(newInfoTest);
                 System.out.println("Informasi tes awal untuk siswa ini telah dibuat.");

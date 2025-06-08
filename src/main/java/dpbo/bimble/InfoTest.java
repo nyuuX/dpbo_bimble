@@ -31,4 +31,14 @@ public class InfoTest {
         System.out.println("Hasil Tes: " + (hasilTes.isEmpty() ? "Belum diinput oleh admin" : hasilTes));
     }
 
+	public Object getAssociatedRegistrationId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setAssociatedRegistrationId(String regId) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
