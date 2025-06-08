@@ -26,7 +26,6 @@ public abstract class Notification {
         this.Subject = Subject;
     }
 
-    // Getter & Setter (Encapsulation)
     public String getNotificationID() {
         return notificationID;
     }
