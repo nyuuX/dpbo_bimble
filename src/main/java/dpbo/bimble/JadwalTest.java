@@ -1,3 +1,5 @@
+package dpbo.bimble;
+
 public class JadwalTest {
     private String tanggalTest;
 

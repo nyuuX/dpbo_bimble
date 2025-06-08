@@ -1,5 +1,7 @@
 package dpbo.bimble;
+
 import java.util.Date;
+
 public class Schedule {
 	private String subject;
 	private Date date;

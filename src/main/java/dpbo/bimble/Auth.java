@@ -14,7 +14,7 @@ public class Auth {
     }
 
     private void initializeDefaultUsers() {
-        Admin defaultAdmin = new Admin("admin_default_01", "admin", "adminpass");
+        Admin defaultAdmin = new Admin("admin_default_01", "admin", "adminpass", null);
 
         if (findUserByUsername(defaultAdmin.getUsername()) == null) {
             this.userDatabase.add(defaultAdmin);
@@ -74,4 +74,5 @@ public class Auth {
                            .filter(u -> u.getUserId().equals(userId))
                            .findFirst();
     }
+
 }

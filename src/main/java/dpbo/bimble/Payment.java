@@ -1,5 +1,6 @@
 package dpbo.bimble;
-	import java.util.Date;
+
+import java.util.Date;
 	
 
 	public class Payment implements Ipayment {
@@ -11,7 +12,6 @@ package dpbo.bimble;
 	    private String status;
 	    private Date tanggalPembayaran;
 
-	    // Constructor
 	    public Payment(String idPayment, String idRegistrasi, int totalHarga, int vaNum, String paymentMethod, String status, Date tanggalPembayaran) {
 	        this.idPayment = idPayment;
 	        this.idRegistrasi = idRegistrasi;
@@ -22,7 +22,6 @@ package dpbo.bimble;
 	        this.tanggalPembayaran = tanggalPembayaran;
 	    }
 
-	    // Getter (opsional untuk akses data)
 	    
 	    public static String getIdPayment() {
 	        return getIdPayment();
@@ -56,7 +55,6 @@ package dpbo.bimble;
 	        this.status = status;
 	    }
 
-	    // Implementasi dari interface IPayment
 	    public void printPaymentInfo() {
 	        System.out.println("=== Payment Info ===");
 	        System.out.println("ID Payment: " + idPayment);

@@ -1,7 +1,5 @@
-package notification;
+package dpbo.bimble;
 
-import data.Registrasi;
-import data.Schedule;
 import java.util.Date;
 
 class ScheduleNotification extends Notification {

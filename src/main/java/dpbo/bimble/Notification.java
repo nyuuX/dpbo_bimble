@@ -1,7 +1,5 @@
-package notification;
+package dpbo.bimble;
 
-import data.Registrasi;
-import data.Schedule;
 import java.util.Date;
 
 public abstract class Notification {
@@ -26,6 +24,7 @@ public abstract class Notification {
         this.Subject = Subject;
     }
 
+    // Getter & Setter (Encapsulation)
     public String getNotificationID() {
         return notificationID;
     }
@@ -89,5 +88,6 @@ public abstract class Notification {
     public void setSubject(String Subject) {
     	this.Subject = Subject;
     }
+
     public abstract String getNotificationDetails();
 }

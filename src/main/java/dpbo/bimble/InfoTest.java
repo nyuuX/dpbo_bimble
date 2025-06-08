@@ -1,3 +1,5 @@
+package dpbo.bimble;
+
 public class InfoTest {
     private JadwalTest jadwalTest;
     private String hasilTes;
@@ -6,7 +8,6 @@ public class InfoTest {
         this.jadwalTest = jadwalTest;
         this.hasilTes = "";
     }
-
 
     public String getHasilTes() {
         return hasilTes;
@@ -30,8 +31,4 @@ public class InfoTest {
         System.out.println("Hasil Tes: " + (hasilTes.isEmpty() ? "Belum diinput oleh admin" : hasilTes));
     }
 
-	public void setTanggalTest(String tanggal) {
-		// TODO Auto-generated method stub
-		
-	}
 }
