@@ -4,7 +4,7 @@ import data.Registrasi;
 import data.Schedule;
 import java.util.Date;
 
-class PaymentNotification extends Notification {
+public class PaymentNotification extends Notification {
     public PaymentNotification(String notificationID, String message, String type,
                                Registrasi registration, String paymentStatus,
                                Schedule schedule, Date date, String Subject) {
