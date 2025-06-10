@@ -141,9 +141,4 @@ public class Registrasi {
 	            "==========================================";
 	}
 
-	public Object getStudent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
