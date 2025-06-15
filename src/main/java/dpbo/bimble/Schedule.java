@@ -50,12 +50,18 @@ public class Schedule {
 		System.out.println("Jadwal berhasil diperbarui.");
 	}
 
-	public void printSchedule() {
-		System.out.println("=========== Schedule ===========");
-		System.out.println("Subject : " + subject);
-		System.out.println("Date    : " + date);
-		System.out.println("Time    : " + startTime + " - " + endTime);
-		System.out.println("Room    : " + room);
-		System.out.println("================================");
+	public String tampilSchedule() {
+		return "=========== Schedule ===========\n"
+		         + "Subject : " + subject + "\n"
+		         + "Date    : " + date + "\n"
+		         + "Time    : " + startTime + " - " + endTime + "\n"
+		         + "Room    : " + room + "\n"
+		         + "================================";
+		
 	}
+	
+	public void printSchedule() {
+	    System.out.println(tampilSchedule());
+	}
+
 }

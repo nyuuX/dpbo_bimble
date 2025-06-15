@@ -2,7 +2,6 @@ package dpbo.bimble;
 
 import java.util.Date;
 	
-
 	public class Payment implements Ipayment {
 	    private String idPayment;
 	    private String idRegistrasi;
@@ -23,8 +22,8 @@ import java.util.Date;
 	    }
 
 	    
-	    public static String getIdPayment() {
-	        return getIdPayment();
+	    public String getIdPayment() {
+	        return idPayment;
 	    }
 
 	    public String getIdRegistrasi() {
@@ -71,6 +70,8 @@ import java.util.Date;
 			// TODO Auto-generated method stub
 			
 		}
+
+
 	}
 
 

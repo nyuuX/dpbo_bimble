@@ -33,8 +33,7 @@ public class Admin extends User {
         }
         for (User user : userDatabase) {
             if (user instanceof Student) {
-                // Logic to confirm registration (e.g., change a status in the Student object)
-                // For example: ((Student) user).setRegistrationConfirmed(true);
+                
             }
         }
         System.out.println("Registrations confirmation logic would go here.");
