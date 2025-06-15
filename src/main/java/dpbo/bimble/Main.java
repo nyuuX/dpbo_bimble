@@ -1,514 +1,223 @@
 package dpbo.bimble;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import java.util.*;
 
 public class Main {
-    private static Auth auth = new Auth();
-    private static List<Registrasi> registrations = new ArrayList<>(); 
-    private static List<Schedule> schedules = new ArrayList<>();  
-    private static List<Notification> notifications = new ArrayList<>(); 
-    private static PaymentHistory paymentHistory = new PaymentHistory(); 
-    private static List<InfoTest> infoTests = new ArrayList<>();    
-
-    private static int nextRegistrationId = 1;
-    private static int nextPaymentId = 1;
-    private static int nextNotificationId = 1;
-
     public static void main(String[] args) {
-        System.out.println("Bimbel");
+        Scanner sc = new Scanner(System.in);
+        Auth auth = new Auth();
 
-        while (true) {
-            System.out.println("\n--- Menu Utama ---");
-            System.out.println("1. Login");
-            System.out.println("2. Keluar");
-            int choice = MissionUtil.getInt("Pilih opsi");
+        List<Registrasi> registrasiList = new ArrayList<>();
+        List<InfoTest> infoTestList = new ArrayList<>();
+        PaymentHistory paymentHistory = new PaymentHistory();
 
-            switch (choice) {
-                case 1:
-                    handleLogin(); 
-                    break;
-                case 2:
-                    System.out.println("Terima kasih, sampai jumpa!");
-                    MissionUtil.closeScanner(); 
-                    return; 
-                default:
-                    System.out.println("Pilihan tidak valid. Silakan coba lagi.");
+        Admin admin = new Admin("admin1", "adminpass", "Admin Utama", "admin");
+        auth.registerUser(admin);
+
+        boolean running = true;
+
+        while (running) {
+            System.out.println("\n===== Menu Login =====");
+            System.out.print("Login sebagai (admin/student/exit): ");
+            String role = sc.nextLine().toLowerCase();
+
+            if (role.equals("exit")) {
+                running = false;
+                break;
             }
-        }
-    }
 
-    private static void handleLogin() {
-        System.out.println("\n--- Login ---");
-        String username = MissionUtil.getString("Masukkan Username");
-        String password = MissionUtil.getPassword("Masukkan Password");
+            System.out.print("Masukkan username: ");
+            String uname = sc.nextLine();
 
-        User loggedInUser = auth.loginUser(username, password);
+            System.out.print("Masukkan password: ");
+            String pass = sc.nextLine();
 
-        if (loggedInUser != null) {
-            loggedInUser.login(); 
-            if (loggedInUser instanceof Admin) {
-                showAdminMenu((Admin) loggedInUser);
-            } else if (loggedInUser instanceof Student) {
-                showStudentMenu((Student) loggedInUser);
+            if (role.equals("student")) {
+                System.out.print("Masukkan nama: ");
+                String name = sc.nextLine();
+                Student student = new Student(uname, pass, name);
+                auth.registerUser(student);
             }
-        }
-    }
 
-    private static void showAdminMenu(Admin admin) {
-        while (true) {
-            System.out.println("\n=== ADMIN MENU (" + admin.getUsername() + ") ===");
-            System.out.println("1. Tambah Jadwal Bimbingan");
-            System.out.println("2. Lihat Semua Pendaftar");
-            System.out.println("3. Konfirmasi Pendaftaran Siswa");
-            System.out.println("4. Konfirmasi Pembayaran Siswa");
-            System.out.println("5. Input Hasil Tes Siswa");
-            System.out.println("6. Lihat Riwayat Pembayaran");
-            System.out.println("7. Logout");
+            User user = auth.loginUser(uname, pass);
 
-            int pil = MissionUtil.getInt("Pilih menu: ");
-            switch (pil) {
-                case 1:
-                    addSchedule(admin);
-                    break;
-                case 2:
-                    displayRegistrations();
-                    break;
-                case 3:
-                    confirmStudentRegistration(admin);
-                    break;
-                case 4:
-                    confirmStudentPayment(admin);
-                    break;
-                case 5:
-                    enterStudentTestResult(admin);
-                    break;
-                case 6:
-                    paymentHistory.printAllHistory();
-                    break;
-                case 7:
-                    admin.logout(); 
-                    return; 
-                default:
-                    System.out.println("Pilihan tidak valid.");
+            if (user == null) {
+                System.out.println("Login gagal.");
+                continue;
             }
-        }
-    }
 
-    private static void showStudentMenu(Student student) {
-        while (true) {
-            System.out.println("\n=== STUDENT MENU (" + student.getUsername() + ") ===");
-            System.out.println("1. Daftar Kursus");
-            System.out.println("2. Lakukan Pembayaran");
-            System.out.println("3. Lihat Notifikasi");
-            System.out.println("4. Lihat Jadwal Bimbingan");
-            System.out.println("5. Lihat Jadwal & Hasil Tes");
-            System.out.println("6. Logout");
+            System.out.println("\nLogin berhasil sebagai " + user.getClass().getSimpleName());
 
-            int pilihan = MissionUtil.getInt("Pilih menu: ");
-            switch (pilihan) {
-                case 1:
-                    boolean alreadyRegistered = false;
-                    for (Registrasi r : registrations) {
-                        if (r.getStudent() != null && r.getStudent().equals(student)) {
-                            alreadyRegistered = true;
+            if (user instanceof Student) {
+                boolean studentMenu = true;
+                while (studentMenu) {
+                    System.out.println("\n===== Menu Student =====");
+                    System.out.println("1. Isi Data Registrasi");
+                    System.out.println("2. Lihat Info Tes");
+                    System.out.println("3. Lakukan Pembayaran");
+                    System.out.println("4. Logout");
+                    System.out.print("Pilih: ");
+                    int choice = sc.nextInt(); sc.nextLine();
+
+                    switch (choice) {
+                        case 1:
+                        	Registrasi reg = Registrasi.registrasi(sc);
+                            if (reg != null) {
+                            	registrasiList.add(reg);
+                                System.out.println("\nData registrasi berhasil disimpan:");
+                                System.out.println(reg);
+                            } else {
+                                System.out.println("\nRegistrasi gagal. Silakan ulangi lagi.");
+                            }
                             break;
-                        }
+
+
+                        case 2:
+                        	if (infoTestList.isEmpty()) {
+                                System.out.println("Belum ada info tes.");
+                            } else {
+                                System.out.println("\n=== Info Tes ===");
+                                for (InfoTest info : infoTestList) {
+                                    info.tampilkanInfoTest();
+                                }
+                            }
+                            break;
+                        case 3:
+                            if (registrasiList.isEmpty()) {
+                                System.out.println("Belum ada registrasi.");
+                                break;
+                            }
+
+                            Registrasi lastReg = registrasiList.get(registrasiList.size() - 1);
+                            System.out.print("Total Harga: ");
+                            int total = sc.nextInt(); sc.nextLine();
+                            System.out.print("VA Number: ");
+                            int va = sc.nextInt(); sc.nextLine();
+                            System.out.print("Status Pembayaran (Lunas/Belum): ");
+                            String status = sc.nextLine();
+
+                            Payment pay = new Payment("PAY-" + (paymentHistory.getAllPayments().size() + 1),
+                                    lastReg.getIdRegistrasi(), total, va, lastReg.getMetodePembayaran(), status, new Date());
+                            paymentHistory.addPayment(pay);
+                            System.out.println("Pembayaran berhasil ditambahkan.");
+                            break;
+
+                        case 4:
+                            System.out.println("Logout...");
+                            studentMenu = false;
+                            break;
                     }
-                    if (!alreadyRegistered) {
-                        registerForCourse(student);
-                    } else {
-                        System.out.println("Anda sudah terdaftar untuk kursus.");
-                    }
-                    break;
-                case 2:
-                    makePayment(student);
-                    break;
-                case 3:
-                    viewNotifications(student);
-                    break;
-                case 4:
-                    displaySchedules();
-                    break;
-                case 5:
-                    viewTestInfo(student);
-                    break;
-                case 6:
-                    student.logout();
-                    return;
-                default:
-                    System.out.println("Pilihan tidak valid.");
-            }
-        }
-    }
-
-    private static void addSchedule(Admin admin) {
-        System.out.println("\n--- Tambah Jadwal Bimbingan Baru ---");
-        String subject = MissionUtil.getString("Mata Pelajaran");
-        Date date = parseDate(MissionUtil.getString("Tanggal (yyyy-MM-dd)"));
-        String startTime = MissionUtil.getString("Jam Mulai (HH:mm)");
-        String endTime = MissionUtil.getString("Jam Selesai (HH:mm)");
-        String room = MissionUtil.getString("Ruangan");
-
-        Schedule newSchedule = new Schedule(subject, date, startTime, endTime, room);
-        schedules.add(newSchedule); 
-        admin.addSchedule(newSchedule); 
-        System.out.println("Jadwal berhasil ditambahkan.");
-
-        for (Registrasi reg : registrations) {
-            if (reg.isKonfirmasi()) {
-                notifications.add(new ScheduleNotification(
-                    "NOTIF-" + nextNotificationId++,
-                    "Jadwal baru untuk " + subject + " pada " + new SimpleDateFormat("dd-MM-yyyy").format(date) + " telah ditambahkan.",
-                    "Jadwal Baru", reg, null, newSchedule, new Date(), subject
-                ));
-            }
-        }
-        System.out.println("Notifikasi jadwal telah dikirim ke siswa yang terkonfirmasi.");
-    }
-
-    private static void displayRegistrations() {
-        System.out.println("\n--- Daftar Semua Pendaftar ---");
-        if (registrations.isEmpty()) {
-            System.out.println("Belum ada pendaftar.");
-        } else {
-            registrations.forEach(System.out::println); 
-        }
-    }
-
-    private static void confirmStudentRegistration(Admin admin) {
-        System.out.println("\n--- Konfirmasi Pendaftaran ---");
-        List<Registrasi> pending = new ArrayList<>();
-        for (Registrasi r : registrations) {
-            if (!r.isKonfirmasi()) {
-                pending.add(r);
-            }
-        }
-
-        if (pending.isEmpty()) {
-            System.out.println("Tidak ada pendaftaran yang menunggu konfirmasi.");
-            return;
-        }
-
-        System.out.println("Pendaftar yang Belum Dikonfirmasi:");
-        for (Registrasi r : pending) {
-            System.out.println("ID: " + r.getIdRegistrasi() + ", Nama: " + r.getNamaLengkap());
-        }
-
-        String regId = MissionUtil.getString("Masukkan ID Registrasi yang akan dikonfirmasi");
-        Registrasi regToConfirm = null;
-        for (Registrasi r : registrations) {
-            if (r.getIdRegistrasi().equalsIgnoreCase(regId)) {
-                regToConfirm = r;
-                break;
-            }
-        }
-
-        if (regToConfirm == null) {
-            System.out.println("ID Registrasi tidak ditemukan.");
-            return;
-        }
-        if (regToConfirm.isKonfirmasi()) {
-            System.out.println("Pendaftaran ini sudah dikonfirmasi sebelumnya.");
-            return;
-        }
-
-        Payment payment = null;
-        for (Payment p : paymentHistory.getAllPayments()) {
-            if (p.getIdRegistrasi().equals(regToConfirm.getIdRegistrasi())) {
-                payment = p;
-                break;
-            }
-        }
-
-        if (payment != null && (payment.getStatus().equalsIgnoreCase("Completed") || payment.getStatus().equalsIgnoreCase("Sukses"))) {
-            regToConfirm.setKonfirmasi(true); 
-            admin.confirmRegistrations();
-            System.out.println("Pendaftaran " + regId + " berhasil dikonfirmasi.");
-
-            boolean infoTestExists = false;
-            for (InfoTest it : infoTests) {
-                if (it.getAssociatedRegistrationId() != null && it.getAssociatedRegistrationId().equals(regId)) {
-                    infoTestExists = true;
-                    break;
-                }
-            }
-            if (!infoTestExists) {
-
-                InfoTest newInfoTest = new InfoTest(new JadwalTest("Belum ditentukan"));
-                newInfoTest.setAssociatedRegistrationId(regId); // Set the associated ID
-                infoTests.add(newInfoTest);
-                System.out.println("Informasi tes awal untuk siswa ini telah dibuat.");
-            }
-
-            notifications.add(new PaymentNotification(
-                "NOTIF-" + nextNotificationId++,
-                "Pendaftaran Anda dengan ID " + regId + " telah Dikonfirmasi. Selamat datang di Briton Bimbel!",
-                "Konfirmasi Pendaftaran", regToConfirm, "Dikonfirmasi", null, new Date(), "Pendaftaran"
-            ));
-        } else {
-            System.out.println("Gagal konfirmasi: Pembayaran belum lunas atau tidak ditemukan untuk registrasi ini.");
-        }
-    }
-
-    private static void confirmStudentPayment(Admin admin) {
-        System.out.println("\n--- Konfirmasi Pembayaran ---");
-        List<Payment> pendingPayments = new ArrayList<>();
-        for (Payment p : paymentHistory.getAllPayments()) {
-            if (p.getStatus().equalsIgnoreCase("Completed")) {
-                pendingPayments.add(p);
-            }
-        }
-
-        if (pendingPayments.isEmpty()) {
-            System.out.println("Tidak ada pembayaran yang menunggu konfirmasi admin.");
-            return;
-        }
-
-        System.out.println("Pembayaran yang Menunggu Konfirmasi:");
-        for (Payment p : pendingPayments) {
-            p.printPaymentInfo();
-        }
-
-        String paymentId = MissionUtil.getString("Masukkan ID Pembayaran yang akan dikonfirmasi");
-        Payment paymentToConfirm = null;
-        for (Payment p : paymentHistory.getAllPayments()) {
-            if (p.getIdPayment().equalsIgnoreCase(paymentId)) {
-                paymentToConfirm = p;
-                break;
-            }
-        }
-
-        if (paymentToConfirm == null) {
-            System.out.println("ID Pembayaran tidak ditemukan.");
-            return;
-        }
-        if (paymentToConfirm.getStatus().equalsIgnoreCase("Sukses")) {
-            System.out.println("Pembayaran ini sudah dikonfirmasi lunas.");
-            return;
-        }
-        if (!paymentToConfirm.getStatus().equalsIgnoreCase("Completed")) {
-            System.out.println("Pembayaran ini belum dilakukan oleh siswa atau statusnya tidak 'Completed'.");
-            return;
-        }
-
-        admin.confirmPayment(paymentToConfirm); 
-        System.out.println("Pembayaran " + paymentId + " berhasil dikonfirmasi sebagai lunas oleh Admin.");
-
-        Registrasi relatedReg = null;
-        for (Registrasi r : registrations) {
-            if (r.getIdRegistrasi().equals(paymentToConfirm.getIdRegistrasi())) {
-                relatedReg = r;
-                break;
-            }
-        }
-        
-        if (relatedReg != null) {
-            notifications.add(new PaymentNotification(
-                "NOTIF-" + nextNotificationId++,
-                "Pembayaran Anda untuk pendaftaran " + relatedReg.getIdRegistrasi() + " telah Lunas dikonfirmasi oleh Admin.",
-                "Konfirmasi Pembayaran", relatedReg, "Sukses", null, new Date(), "Pembayaran"
-            ));
-        }
-    }
-
-    private static void enterStudentTestResult(Admin admin) {
-        System.out.println("\n--- Input Hasil Tes Siswa ---");
-        String regId = MissionUtil.getString("Masukkan ID Registrasi siswa untuk menginput hasil tes");
-        
-        InfoTest studentTestInfo = null;
-        for (InfoTest it : infoTests) {
-            if (it.getAssociatedRegistrationId() != null && it.getAssociatedRegistrationId().equals(regId)) {
-                studentTestInfo = it;
-                break;
-            }
-        }
-
-        if (studentTestInfo == null) {
-            System.out.println("Informasi tes tidak ditemukan untuk ID Registrasi ini. Pastikan siswa sudah dikonfirmasi.");
-            return;
-        }
-
-        String testResult = MissionUtil.getString("Masukkan hasil tes (Contoh: Lulus, Tidak Lulus, Baik, Cukup)");
-        studentTestInfo.inputHasilTesOlehAdmin(testResult, admin.getRole()); 
-        Registrasi relatedReg = null;
-        for (Registrasi r : registrations) {
-            if (r.getIdRegistrasi().equals(regId)) {
-                relatedReg = r;
-                break;
-            }
-        }
-
-        if (relatedReg != null) {
-            notifications.add(new PaymentNotification( 
-                "NOTIF-" + nextNotificationId++,
-                "Hasil tes Anda telah diinput: " + testResult + ". Cek menu 'Jadwal & Hasil Tes' Anda.",
-                "Hasil Tes", relatedReg, testResult, null, new Date(), "Hasil Tes"
-            ));
-        }
-    }
-
-    private static void registerForCourse(Student student) {
-        System.out.println("\n--- Formulir Pendaftaran Kursus ---");
-        String namaLengkap = MissionUtil.getString("Nama Lengkap");
-        Date tglLahir = parseDate(MissionUtil.getString("Tanggal Lahir (yyyy-MM-dd)"));
-        String jenisKelamin = MissionUtil.getString("Jenis Kelamin (Pria/Wanita)");
-        String alamat = MissionUtil.getString("Alamat");
-        String noHp = MissionUtil.getString("No. HP");
-        String namaWali = MissionUtil.getString("Nama Wali (jika ada, kosongkan jika tidak)");
-        String noHpWali = MissionUtil.getString("No. HP Wali (jika ada, kosongkan jika tidak)");
-        String metodePembayaran = MissionUtil.getString("Metode Pembayaran (Transfer/VA)");
-
-        String newRegId = "REG-" + String.format("%04d", nextRegistrationId++);
-        Registrasi newRegistration = new Registrasi(newRegId, tglLahir, jenisKelamin,
-                                        alamat, noHp, student.getUsername(), namaWali, noHpWali, metodePembayaran);
-        registrations.add(newRegistration);
-
-        int courseFee = 500000; 
-        int virtualAccountNum = (int)(Math.random() * 900000) + 100000; 
-        String paymentId = "PAY-" + String.format("%04d", nextPaymentId++);
-
-        Payment newPayment = new Payment(paymentId, newRegId, courseFee, virtualAccountNum, metodePembayaran, "Pending", null);
-        paymentHistory.addPayment(newPayment); 
-
-        System.out.println("Pendaftaran berhasil diajukan. ID Registrasi Anda: " + newRegId);
-        System.out.println("Silakan lakukan pembayaran.");
-
-        notifications.add(new PaymentNotification(
-            "NOTIF-" + nextNotificationId++,
-            "Pendaftaran Anda berhasil. Lakukan pembayaran sebesar Rp" + courseFee + " ke VA " + virtualAccountNum + " (ID Pembayaran: " + paymentId + ").",
-            "Instruksi Pembayaran", newRegistration, "Pending", null, new Date(), "Pembayaran"
-        ));
-    }
-
-    private static void makePayment(Student student) {
-        System.out.println("\n--- Lakukan Pembayaran ---");
-        String idRegistrasi = MissionUtil.getString("Masukkan ID Registrasi Anda");
-
-        Payment paymentToProcess = null;
-        Registrasi relatedReg = null;
-
-        for (Registrasi reg : registrations) {
-            if (reg.getIdRegistrasi().equals(idRegistrasi) && reg.getStudent().equals(student)) {
-                relatedReg = reg;
-                break;
-            }
-        }
-
-        if (relatedReg == null) {
-            System.out.println("ID Registrasi tidak valid atau bukan milik Anda.");
-            return;
-        }
-
-        for(Payment p : paymentHistory.getAllPayments()){
-            if(p.getIdRegistrasi().equals(idRegistrasi)){
-                paymentToProcess = p;
-                break;
-            }
-        }
-
-        if (paymentToProcess == null) {
-            System.out.println("Data pembayaran untuk registrasi ini tidak ditemukan.");
-            return;
-        }
-        
-        if (paymentToProcess.getStatus().equals("Completed")) {
-            System.out.println("Pembayaran untuk registrasi ini sudah lunas.");
-            return;
-        }
-
-        paymentToProcess.printPaymentInfo();
-        String konfirmasi = MissionUtil.getString("Ketik 'BAYAR' untuk mengkonfirmasi pembayaran senilai Rp" + paymentToProcess.getTotalHarga());
-
-        if (konfirmasi.equalsIgnoreCase("BAYAR")) {
-            paymentToProcess.setStatus("Completed");
-            paymentToProcess.setTanggalPembayaran(new java.util.Date());
-            
-            for (Notification n : notifications) {
-                if (n.getRegistration().getIdRegistrasi().equals(idRegistrasi)) {
-                    n.setPaymentStatus("Lunas");
-                    n.setMessage("Pembayaran Anda telah berhasil.");
                 }
             }
 
-            String notifId = "NTF-" + nextNotificationId++;
-            PaymentNotification paymentNotif = new PaymentNotification(notifId,
-                "Pembayaran Anda sebesar Rp" + paymentToProcess.getTotalHarga() + " telah berhasil.",
-                "Pembayaran", relatedReg, "Completed", null, new Date(System.currentTimeMillis()), "Status Pembayaran");
-            notifications.add(paymentNotif);
+            if (user instanceof Admin) {
+                boolean adminMenu = true;
+                while (adminMenu) {
+                    System.out.println("\n===== Menu Admin =====");
+                    System.out.println("1. Lihat Semua Registrasi");
+                    System.out.println("2. Input & Lihat Hasil Tes");
+                    System.out.println("3. Lihat Riwayat Pembayaran");
+                    System.out.println("4. Buat Jadwal Pelajaran");
+                    System.out.println("5. Logout");
+                    System.out.print("Pilih: ");
+                    int choice = sc.nextInt(); sc.nextLine();
 
-            System.out.println("Pembayaran berhasil!");
-        } else {
-            System.out.println("Pembayaran dibatalkan.");
-        }
-    }
+                    switch (choice) {
+                        case 1:
+                        	if (registrasiList.isEmpty()) {
+                                System.out.println("Belum ada data registrasi!!");
+                            } else {
+                                System.out.println("=== Daftar Data Registrasi ===");
+                                for (Registrasi r : registrasiList) {
+                                    System.out.println(r);
+                                }
+                            }
+                            break;
 
-    private static void displaySchedules() {
-        System.out.println("\n--- Jadwal Bimbingan Tersedia ---");
-        if (schedules.isEmpty()) {
-            System.out.println("Belum ada jadwal bimbingan yang diatur.");
-        } else {
-            schedules.forEach(Schedule::printSchedule);
-        }
-    }
+                        case 2:
+                            System.out.println("\n1. Buat Jadwal Tes Baru");
+                            System.out.println("2. Input Hasil Tes");
+                            System.out.print("Pilih opsi: ");
+                            String pilihanTes = sc.nextLine();
 
-    private static void viewNotifications(Student student) {
-        System.out.println("\n--- Notifikasi Anda ---");
-        boolean foundNotifications = false;
-        for (Notification n : notifications) {
-            if (n.getRegistration() != null && n.getRegistration().getStudent() != null && n.getRegistration().getStudent().equals(student)) {
-                System.out.println("---------------------------------");
-                System.out.println(n.getNotificationDetails()); 
-                foundNotifications = true;
+                            if (pilihanTes.equals("1")) {
+                                System.out.print("Tanggal Tes (yyyy-mm-dd): ");
+                                String tglTes = sc.nextLine();
+
+                                try {
+                                    JadwalTest jadwalTest = new JadwalTest(tglTes);
+                                    InfoTest info = new InfoTest(jadwalTest);
+                                    infoTestList.add(info);
+                                    System.out.println("Jadwal tes berhasil dibuat.");
+                                } catch (IllegalArgumentException e) {
+                                    System.out.println("Format tanggal salah.");
+                                }
+
+                            } else if (pilihanTes.equals("2")) {
+                                if (infoTestList.isEmpty()) {
+                                    System.out.println("Belum ada info tes yang tersedia.");
+                                } else {
+                                    System.out.println("\nPilih Jadwal untuk Input Hasil Tes:");
+                                    for (int i = 0; i < infoTestList.size(); i++) {
+                                        System.out.println("[" + i + "] " + infoTestList.get(i).getJadwalTest().getTanggalTest());
+                                    }
+
+                                    System.out.print("Masukkan indeks jadwal: ");
+                                    String idxStr = sc.nextLine();
+
+                                    try {
+                                        int idx = Integer.parseInt(idxStr);
+                                        if (idx >= 0 && idx < infoTestList.size()) {
+                                            System.out.print("Masukkan hasil tes: ");
+                                            String hasil = sc.nextLine();
+                                            infoTestList.get(idx).inputHasilTesOlehAdmin(hasil, "admin");
+                                            System.out.println("Hasil tes berhasil disimpan.");
+                                        } else {
+                                            System.out.println("Indeks tidak valid.");
+                                        }
+                                    } catch (NumberFormatException e) {
+                                        System.out.println("Input harus berupa angka.");
+                                    }
+                                }
+                            }
+                            break;
+
+
+                        case 3:
+                            paymentHistory.printAllHistory();
+                            break;
+
+                        case 4:
+                            System.out.print("Mata Pelajaran: ");
+                            String subject = sc.nextLine();
+                            System.out.print("Tanggal (yyyy-mm-dd): ");
+                            String tglMapel = sc.nextLine();
+                            System.out.print("Waktu Mulai: ");
+                            String start = sc.nextLine();
+                            System.out.print("Waktu Selesai: ");
+                            String end = sc.nextLine();
+                            System.out.print("Ruangan: ");
+                            String room = sc.nextLine();
+
+                            try {
+                                Schedule schedule = new Schedule(subject, java.sql.Date.valueOf(tglMapel), start, end, room);
+                                schedule.printSchedule();
+                            } catch (IllegalArgumentException e) {
+                                System.out.println("Format tanggal salah.");
+                            }
+                            break;
+
+                        case 5:
+                            System.out.println("Logout...");
+                            adminMenu = false;
+                            break;
+                    }
+                }
             }
         }
-        if (!foundNotifications) {
-            System.out.println("Tidak ada notifikasi baru untuk Anda.");
-        }
-        System.out.println("---------------------------------");
-    }
 
-    private static void viewTestInfo(Student student) {
-        System.out.println("\n--- Jadwal dan Hasil Tes Anda ---");
-        String regId = MissionUtil.getString("Masukkan ID Registrasi Anda untuk melihat info tes");
-
-        Registrasi studentReg = null;
-        for (Registrasi r : registrations) {
-            if (r.getIdRegistrasi().equalsIgnoreCase(regId) && r.getStudent() != null && r.getStudent().equals(student)) {
-                studentReg = r;
-                break;
-            }
-        }
-
-        if (studentReg == null) {
-            System.out.println("ID Registrasi tidak ditemukan atau bukan milik Anda.");
-            return;
-        }
-
-        InfoTest myInfoTest = null;
-        for (InfoTest it : infoTests) {
-            if (it.getAssociatedRegistrationId() != null && it.getAssociatedRegistrationId().equals(regId)) {
-                myInfoTest = it;
-                break;
-            }
-        }
-
-        if (myInfoTest == null) {
-            System.out.println("Informasi tes belum tersedia untuk ID Registrasi ini. Mungkin pendaftaran Anda belum dikonfirmasi admin atau hasil tes belum diinput.");
-        } else {
-            myInfoTest.tampilkanInfoTest();
-        }
-    }
-
-    private static Date parseDate(String dateStr) {
-        try {
-            return new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
-        } catch (ParseException e) {
-            System.out.println("Format tanggal salah (gunakan YYYY-MM-DD). Menggunakan tanggal hari ini.");
-            return new Date();
-        }
+        System.out.println("Program selesai.");
+        sc.close();
     }
 }
