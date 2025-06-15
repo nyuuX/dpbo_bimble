@@ -373,17 +373,21 @@ public class BimbleSwingApp {
 
     private void showPaymentHistory() {
         if (paymentHistory.getAllPayments().isEmpty()) {
-            JOptionPane.showMessageDialog(mainFrame, "No payment history available!", "Information", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(mainFrame, "Belum ada riwayat pembayaran!", "Informasi", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        
-        JFrame paymentFrame = new JFrame("Payment History");
-        paymentFrame.setSize(700, 400);
-        
-        String[] columnNames = {"ID", "Reg ID", "Amount", "VA Number", "Method", "Status", "Date"};
+
+        JFrame paymentFrame = new JFrame("Riwayat Pembayaran");
+        paymentFrame.setSize(800, 400);
+        paymentFrame.setLayout(new BorderLayout());
+
+        String[] columnNames = {"ID Pembayaran", "ID Registrasi", "Total", "No VA", "Metode", "Status", "Tanggal"};
+
         List<Payment> payments = paymentHistory.getAllPayments();
         Object[][] data = new Object[payments.size()][7];
-        
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
         for (int i = 0; i < payments.size(); i++) {
             Payment p = payments.get(i);
             data[i][0] = p.getIdPayment();
@@ -392,12 +396,18 @@ public class BimbleSwingApp {
             data[i][3] = p.getVaNum();
             data[i][4] = p.getPaymentMethod();
             data[i][5] = p.getStatus();
-            data[i][6] = p.getTanggalPembayaran();
+            data[i][6] = sdf.format(p.getTanggalPembayaran());
         }
-        
+
         JTable table = new JTable(data, columnNames);
         JScrollPane scrollPane = new JScrollPane(table);
-        paymentFrame.add(scrollPane);
+
+        JButton closeButton = new JButton("Tutup");
+        closeButton.addActionListener(e -> paymentFrame.dispose());
+
+        paymentFrame.add(scrollPane, BorderLayout.CENTER);
+        paymentFrame.add(closeButton, BorderLayout.SOUTH);
+
         paymentFrame.setLocationRelativeTo(mainFrame);
         paymentFrame.setVisible(true);
     }
