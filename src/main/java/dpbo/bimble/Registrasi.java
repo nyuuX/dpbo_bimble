@@ -1,6 +1,7 @@
 package dpbo.bimble;
 
 import java.util.Date;
+import java.util.Scanner;
 
 public class Registrasi {
 	private static int i = 1;
@@ -15,6 +16,7 @@ public class Registrasi {
 	private String noHpWali;
 	private String metodePembayaran;
 	private boolean konfirmasi;
+	Scanner sc = new Scanner(System.in);
 
 	public Registrasi(String namaLengkap, Date tanggalLahir,
 			String jenisKelamin, String alamat, String noHp, String email, String namaWali, String noHpWali,
@@ -139,6 +141,37 @@ public class Registrasi {
 	            "Metode Pembayaran: " + metodePembayaran + "\n" +
 	            "Konfirmasi       : " + (konfirmasi ? "Sudah" : "Belum") + "\n" +
 	            "==========================================";
+	}
+
+	public static Registrasi registrasi(Scanner sc) {
+		System.out.println("=== Data Registrasi ===");
+        System.out.print("Nama Lengkap: ");
+		String nama = sc.nextLine();
+        System.out.print("Tanggal Lahir (yyyy-mm-dd): ");
+        String tgl = sc.nextLine();
+        Date tanggalLahir;
+        try {
+            tanggalLahir = java.sql.Date.valueOf(tgl);
+        } catch (Exception e) {
+            System.out.println("Format tanggal salah. Gunakan yyyy-mm-dd.");
+            return null;
+        }
+        System.out.print("Jenis Kelamin: ");
+        String jk = sc.nextLine();
+        System.out.print("Alamat: ");
+        String alamat = sc.nextLine();
+        System.out.print("No HP: ");
+        String noHp = sc.nextLine();
+        System.out.print("Email: ");
+        String email = sc.nextLine();
+        System.out.print("Nama Wali: ");
+        String wali = sc.nextLine();
+        System.out.print("No HP Wali: ");
+        String hpWali = sc.nextLine();
+        System.out.print("Metode Pembayaran: ");
+        String metode = sc.nextLine();
+        
+        return new Registrasi(nama, tanggalLahir, jk, alamat, noHp, email, wali, hpWali, metode);
 	}
 
 }
