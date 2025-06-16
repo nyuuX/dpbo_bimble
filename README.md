@@ -1,4 +1,4 @@
-di aplikasi kami, kami ada sedikit perubahan di main nya dan juga di beberapa class yang kamu tambahin method untuk keperluan di mainnya disini kami akan memberikan kode main yang lama dan juga yang baru untuk menjadikan perubahannya
+di aplikasi kami, kami ada sedikit perubahan di main nya dan juga di beberapa class yang kami tambahin method untuk keperluan di mainnya disini kami akan memberikan kode main yang lama dan juga yang baru untuk menjadikan perubahannya
 Main yang lama:
 
 package dpbo.bimble;
