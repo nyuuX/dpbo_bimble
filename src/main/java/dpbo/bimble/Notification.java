@@ -11,9 +11,11 @@ public abstract class Notification {
     private Schedule schedule;
     private Date date;
     private String Subject;
+    private String room;
+    private String time;
 
     public Notification(String notificationID, String message, String type,
-                        Registrasi registration, String paymentStatus, Schedule schedule, Date date, String subject) {
+                        Registrasi registration, String paymentStatus, Schedule schedule, Date date, String subject, String room, String time) {
         this.notificationID = notificationID;
         this.message = message;	
         this.type = type;
@@ -21,10 +23,11 @@ public abstract class Notification {
         this.paymentStatus = paymentStatus;
         this.schedule = schedule;
         this.date = date;
-        this.Subject = Subject;
+        this.Subject = subject;
+        this.room = room;
+        this.time = time;
     }
 
-    // Getter & Setter (Encapsulation)
     public String getNotificationID() {
         return notificationID;
     }
@@ -89,5 +92,18 @@ public abstract class Notification {
     	this.Subject = Subject;
     }
 
+    public String getRoom() {
+        return room;
+    }
+    
+    public String getTime() {
+        return time;
+    }
+    
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    
     public abstract String getNotificationDetails();
 }

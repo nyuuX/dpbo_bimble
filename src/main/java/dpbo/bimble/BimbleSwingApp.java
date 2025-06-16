@@ -12,9 +12,9 @@ import java.util.List;
 public class BimbleSwingApp {
     private JFrame mainFrame;
     private Auth auth;
-    private List<Registrasi> registrasiList;
-    private List<InfoTest> infoTestList;
-    private List<Schedule> scheduleList;
+    private ArrayList<Registrasi> registrasiList;
+    private ArrayList<InfoTest> infoTestList;
+    private ArrayList<Schedule> scheduleList;
     private PaymentHistory paymentHistory;
     private User currentUser;
 
@@ -718,7 +718,7 @@ public class BimbleSwingApp {
                     Integer.parseInt(vaField.getText()),
                     lastReg.getMetodePembayaran(),
                     (String) statusCombo.getSelectedItem(),
-                    new Date()
+                    new Date(), null
                 );
                 paymentHistory.addPayment(pay);
                 JOptionPane.showMessageDialog(paymentFrame, "Pembayaran berhasil!");
@@ -756,6 +756,7 @@ public class BimbleSwingApp {
 	            sb.append(s.tampilSchedule()).append("\n");
 	        }
 	    }
+	    
 	    sb.append("\n=== Notifikasi Pembayaran ===\n");
 	    if (registrasiList.isEmpty()) {
 	        sb.append("Belum ada data registrasi.\n");

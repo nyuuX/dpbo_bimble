@@ -1,6 +1,8 @@
 package dpbo.bimble;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Schedule {
 	private String subject;
@@ -8,6 +10,7 @@ public class Schedule {
 	private String startTime;
 	private String endTime;
 	private String room;
+	private String hasilTes;
 
 	public Schedule(String subject, Date date, String startTime, String endTime, String room) {
 		this.subject = subject;
@@ -15,6 +18,7 @@ public class Schedule {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.room = room;
+		 this.hasilTes = null;
 	}
 
 	public String getSubject() {
@@ -36,6 +40,13 @@ public class Schedule {
 	public String getRoom() {
 		return room;
 	}
+	
+	public String getHasilTes() {
+        return hasilTes;
+    }
+	  public void setHasilTes(String hasilTes) {
+	        this.hasilTes = hasilTes;
+	    }
 
 	public void setSchedule(Admin admin, String subject, Date date, String startTime, String endTime, String room) {
 		if (admin == null) {
@@ -50,18 +61,27 @@ public class Schedule {
 		System.out.println("Jadwal berhasil diperbarui.");
 	}
 
-	public String tampilSchedule() {
-		return "=========== Schedule ===========\n"
-		         + "Subject : " + subject + "\n"
-		         + "Date    : " + date + "\n"
-		         + "Time    : " + startTime + " - " + endTime + "\n"
-		         + "Room    : " + room + "\n"
-		         + "================================";
-		
-	}
-	
 	public void printSchedule() {
-	    System.out.println(tampilSchedule());
+		System.out.println("=========== Schedule ===========");
+		System.out.println("Subject : " + subject);
+		System.out.println("Date    : " + date);
+		System.out.println("Time    : " + startTime + " - " + endTime);
+		System.out.println("Room    : " + room);
+		 if (hasilTes != null) {
+		        System.out.println("Hasil Tes: " + hasilTes);
+		    }
+		System.out.println("================================");
+	}
+
+	public String tampilSchedule() {
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("id", "ID"));
+	    return "=========== Schedule ===========\n" +
+	           "Subject : " + subject + "\n" +
+	           "Date    : " + dateFormat.format(date) + "\n" +
+	           "Time    : " + startTime + " - " + endTime + "\n" +
+	           "Room    : " + room + "\n" +
+	           ((hasilTes != null && !hasilTes.isEmpty()) ? "Hasil Tes: " + hasilTes + "\n" : "") +
+	           "================================";
 	}
 
 }
