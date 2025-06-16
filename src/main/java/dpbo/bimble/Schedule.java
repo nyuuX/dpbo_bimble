@@ -72,16 +72,4 @@ public class Schedule {
 		    }
 		System.out.println("================================");
 	}
-
-	public String tampilSchedule() {
-	    SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("id", "ID"));
-	    return "=========== Schedule ===========\n" +
-	           "Subject : " + subject + "\n" +
-	           "Date    : " + dateFormat.format(date) + "\n" +
-	           "Time    : " + startTime + " - " + endTime + "\n" +
-	           "Room    : " + room + "\n" +
-	           ((hasilTes != null && !hasilTes.isEmpty()) ? "Hasil Tes: " + hasilTes + "\n" : "") +
-	           "================================";
-	}
-
 }
